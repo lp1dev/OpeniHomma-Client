@@ -66,7 +66,7 @@ def sendTCPPacket(address, message, wait_response=False):
 
 def probeDevices():
     deviceId, address = sendUDPPacket((UDP_IP, UDP_PORT), "HLK")
-    print("Device discovered : %s" %deviceId, address[0])
+    print("Device discovered : ", deviceId, address[0])
     return (address[0], 8080)
 
 def sendInstruction(instruction, write_switch, data, final_byte=0):
@@ -135,10 +135,12 @@ def setLuminance(value): #value between 0 and 200
     return sendInstruction(0xa7, 1, [value])
 
 def setCustomColor(r, g, b): # value between 0 and 255
+    # For colors w/ a packet length > 1266
     print("setCustomColor : rgb(%s, %s, %s)" %(r, g, b))
     return sendInstruction(0xa1, 1, [r,g,b])
 
 def setAbsoluteColor(color): 
+    # if the packet size is < 1266 it must be 1010
     if color == "red":
         return sendInstruction(0xa1, 1, [255, 0, 0], 94)
     elif color == "green":
